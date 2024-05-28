@@ -1,0 +1,21 @@
+name: Primer pipeline
+on:
+  pull_request:
+    branches: ['main']
+
+  push:
+    branches: ['main']
+jobs: 
+  build:
+    runs-on: windows-latest
+
+    steps:
+        - name: Revision Repositorio
+          run: echo esta ejecuntado el entorno
+        - name: Analisis Repositorio
+          run: se esta analizando el repositorio
+
+
+
+          
+ls -la

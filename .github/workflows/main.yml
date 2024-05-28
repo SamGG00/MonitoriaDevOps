@@ -1,21 +1,60 @@
 name: Primer pipeline
+
 on:
   pull_request:
     branches: ['main']
-
   push:
     branches: ['main']
-jobs: 
+
+jobs:
   build:
     runs-on: windows-latest
 
     steps:
-        - name: Revision Repositorio
-          run: echo esta ejecuntado el entorno
-        - name: Analisis Repositorio
-          run: se esta analizando el repositorio
+      - name: Configurar repositorio
+        uses: actions/checkout@v2
 
+      - name: Configurar Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'  
 
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-          
-ls -la
+      - name: Revisión del Repositorio
+        run: echo El entorno está configurado correctamente
+
+      - name: Análisis del Repositorio
+        run: echo Se está analizando el repositorio
+
+      - name: Ejecutar pruebas
+        run: |
+          echo Ejecutando pruebas...
+          pytest
+
+      - name: Análisis estático del código
+        run: |
+          echo Ejecutando análisis estático del código...
+          pylint src/
+
+      - name: Generar reporte de cobertura
+        run: |
+          echo Generando reporte de cobertura...
+          coverage run -m pytest
+          coverage report
+          coverage html
+
+      - name: Listar archivos del directorio
+        run: ls -la
+
+      - name: Subir artefactos de cobertura
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: coverage_html_report/
+
+      - name: Limpiar el entorno
+        run: echo Limpiando el entorno de trabajo
